@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function getGridData() {
+            // calc computed style
+
+            const gridComputedStyle = window.getComputedStyle(grid);
+
+            return {
+                // get number of grid rows
+                gridRowCount: gridComputedStyle.getPropertyValue("grid-template-rows").split(" ").length,
+                // get number of grid columns
+                gridColumnCount: gridComputedStyle.getPropertyValue("grid-template-columns").split(" ").length,
+                // get grid row sizes
+                gridRowSizes: gridComputedStyle.getPropertyValue("grid-template-rows").split(" ").map(parseFloat),
+                // get grid column sizes
+                gridColumnSizes: gridComputedStyle.getPropertyValue("grid-template-columns").split(" ").map(parseFloat),
+                // get grid length
+                gridLength: grid.children.length,
+                grid: grid
+                            }
+        }
+
+        window.addEventListener("DOMContentLoaded", outputGridData);
+        window.addEventListener("resize", outputGridData);
+
+        function outputGridData() {
+            const gridData = getGridData();
+            const gridLength = gridData.gridLength
+            const columns = gridData.gridColumnCount
+            const rows = gridData.gridRowCount
+            const grid = gridData.grid
+            output.textContent = `
+            Rows: ${gridData.gridRowCount}
+            Columns: ${gridData.gridColumnCount}
+            Rows sizes: ${gridData.gridRowSizes}
+            Column sizes: ${gridData.gridColumnSizes}
+        `;
+        
+        const topColumns = (rows - 1) * columns;
+        
+        const lastColumns = gridLength - 1
+
+        for(var i = 0; gridLength - 1 >= i; i++){
+            grid.children[i].classList.remove('lastRow')
+            grid.children[i].classList.remove('firstRow')
+        }
+        for(var i = topColumns + 1; gridLength >= i; i++){
+            grid.children[i - 1].classList.add('lastRow')
+        }
+        for(var i = 0; gridData.gridColumnCount >= i+1; i++){
+            grid.children[i].classList.add('firstRow')
+        }
+        }
+    </script>
+    <style>
+        #grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+        .lastRow{
+            background-color: orange;
+        }
+        .firstRow{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="output"></div>
+        <div id="grid">
+        <div class="A">A</div>
+        <div class="B">B</div>
+        <div class="C">C</div>
+        <div class="A">A</div>
+        <div class="B">B</div>
+        <div class="C">C</div>
+        <div class="A">A</div>
+        <div class="B">B</div>
+        <div class="C">C</div>
+        <div class="A">A</div>
+        <div class="B">B</div>
+        <div class="C">C</div>
+        </div>
+</body>
+</html>
